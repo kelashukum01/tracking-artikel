@@ -1,6 +1,6 @@
 {
   "name": "Tracking Artikel Hukum",
-  "short_name": "ArtikelHukum",
+  "short_name": "Tracking Artikel",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
