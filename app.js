@@ -1,53 +1,153 @@
-const apiKey = 'AIzaSyDRjh5bYH1i_RKB-JFMaDRBq4adE4C5oyw';
-const sheetId = '1SbXg_VomcX8ndwjuUKz7BZ-DRPskfk6AzRIysCb694w';
-const sheetName = 'Sheet1';
-const range = `${sheetName}!B3:H`; // mulai dari kolom B sampai H
+const url = "https://script.google.com/macros/s/AKfycbwvax90P8Ytbp4ULGucN0ZE2fewBYGHHsJpr-M25dJIJMOgB_hLpubsZlU1imSREhSY/exec";
 
-const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+let allRows = [];
 
-let semuaData = []; // simpan semua data global
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+    allRows = data.data;
+    tampilkanData(""); // Default: semua data
+  });
 
-// Fungsi Ambil Data dari Sheet
-function ambilData() {
-  fetch(sheetUrl)
-    .then(res => res.json())
-    .then(data => {
-      semuaData = data.values || [];
-      tampilkanData(semuaData); // Tampilkan semua saat pertama kali
-    })
-    .catch(err => console.error('Gagal ambil data:', err));
-}
-
-// Fungsi Tampilkan Data ke Tabel
-function tampilkanData(dataArray) {
+function tampilkanData(filterStatus) {
   const tbody = document.querySelector('#sheet-data tbody');
-  tbody.innerHTML = '';
+  const thead = document.querySelector('#sheet-data thead');
+  tbody.innerHTML = "";
+  thead.innerHTML = "";
 
-  dataArray.forEach((row, i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${row[0] || ''}</td>       <!-- Judul -->
-      <td>${row[1] || ''}</td>       <!-- Tanggal -->
-      <td>${row[2] || ''}</td>       <!-- Jurnal -->
-      <td>${row[4] || ''}</td>       <!-- Deadline -->
-      <td>${row[6] || ''}</td>       <!-- Status -->
-    `;
+  // Tentukan struktur header berdasarkan status
+  let headers = [];
+  switch (filterStatus) {
+    case "Draft":
+      headers = ["No", "Judul Artikel", "Deadline", "Catatan"];
+      break;
+    case "Siap Submit":
+      headers = ["No", "Judul Artikel", "Jurnal", "Index", "Link Jurnal", "Author"];
+      break;
+    case "Submitted":
+      headers = ["No", "Judul Artikel", "Jurnal", "Index", "Tanggal Submit", "Author"];
+      break;
+    case "Review":
+      headers = ["No", "Judul Artikel", "Jurnal", "Index", "Author"];
+      break;
+    case "Revisi":
+      headers = ["No", "Judul Artikel", "Jurnal", "Catatan", "Author"];
+      break;
+    case "Accepted":
+    case "Published":
+      headers = ["No", "Judul Artikel", "Jurnal", "Author"];
+      break;
+    case "Rejected":
+      headers = ["No", "Judul Artikel", "Jurnal", "Catatan", "Author"];
+      break;
+    default:
+      headers = ["No", "Judul Artikel", "Tanggal Submit", "Jurnal", "Index", "Link Jurnal", "Deadline", "Catatan", "Status", "Author"];
+  }
+
+  // Buat elemen <th> sesuai header
+  const headerRow = document.createElement("tr");
+  headers.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+
+  // Filter data
+  let filtered = allRows;
+  if (filterStatus) {
+    filtered = allRows.filter(row => row[8] === filterStatus);
+  }
+
+  // Tampilkan isi tabel
+  filtered.forEach((row, i) => {
+    const tr = document.createElement("tr");
+
+    switch (filterStatus) {
+      case "Draft":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[6] || ""}</td>
+          <td>${row[7] || ""}</td>`;
+        break;
+
+      case "Siap Submit":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[4] || ""}</td>
+          <td><a href="${row[5] || "#"}" target="_blank">Lihat</a></td>
+          <td>${row[9] || ""}</td>`;
+        break;
+
+      case "Submitted":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[4] || ""}</td>
+          <td>${row[2] || ""}</td>
+          <td>${row[9] || ""}</td>`;
+        break;
+
+      case "Review":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[4] || ""}</td>
+          <td>${row[9] || ""}</td>`;
+        break;
+
+      case "Revisi":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[7] || ""}</td>
+          <td>${row[9] || ""}</td>`;
+        break;
+
+      case "Accepted":
+      case "Published":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[9] || ""}</td>`;
+        break;
+
+      case "Rejected":
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[7] || ""}</td>
+          <td>${row[9] || ""}</td>`;
+        break;
+
+      default:
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${row[1] || ""}</td>
+          <td>${row[2] || ""}</td>
+          <td>${row[3] || ""}</td>
+          <td>${row[4] || ""}</td>
+          <td><a href="${row[5] || "#"}" target="_blank">Lihat</a></td>
+          <td>${row[6] || ""}</td>
+          <td>${row[7] || ""}</td>
+          <td>${row[8] || ""}</td>
+          <td>${row[9] || ""}</td>`;
+        break;
+    }
+
     tbody.appendChild(tr);
   });
 }
 
-// Fungsi Filter Data berdasarkan Dropdown
 function filterData() {
-  const selectedStatus = document.getElementById('filterStatus').value;
-
-  if (!selectedStatus) {
-    tampilkanData(semuaData); // tampilkan semua jika tidak pilih status
-  } else {
-    const hasilFilter = semuaData.filter(row => (row[6] || '').toLowerCase() === selectedStatus.toLowerCase());
-    tampilkanData(hasilFilter);
-  }
+  const status = document.getElementById("filterStatus").value;
+  tampilkanData(status);
 }
-
-// Jalankan saat halaman pertama kali dimuat
-document.addEventListener('DOMContentLoaded', ambilData);

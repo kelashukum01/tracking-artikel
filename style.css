@@ -20,10 +20,24 @@ input, select, button {
   font-size: 1em;
 }
 
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
   background: white;
+  display: block;
+  overflow-x: auto;
 }
 
 th, td {
@@ -33,4 +47,23 @@ th, td {
 
 th {
   background: #eee;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+  }
+
+  table, th, td {
+    font-size: 0.9em;
+  }
+
+  input, select, button {
+    font-size: 0.9em;
+    padding: 6px;
+  }
 }

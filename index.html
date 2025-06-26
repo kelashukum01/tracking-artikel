@@ -23,32 +23,12 @@
   <!-- ✅ CSS Eksternal -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- ✅ CSS Inline -->
+  <!-- ✅ CSS Tambahan (Inline) -->
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      background: #f9f9f9;
-    }
-    h1 {
-      font-size: 1.8rem;
+    select {
+      padding: 8px;
       margin-bottom: 1rem;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background: #f0f0f0;
-    }
-    a {
-      color: blue;
+      font-size: 1em;
     }
   </style>
 </head>
@@ -56,37 +36,30 @@
 
   <h1>📄 Tracking Artikel Hukum</h1>
 
-  <!-- ✅ Dropdown Filter -->
+  <!-- ✅ Dropdown Filter Status -->
   <label for="filterStatus"><strong>Filter berdasarkan Status:</strong></label>
   <select id="filterStatus" onchange="filterData()">
     <option value="">-- Semua Status --</option>
     <option value="Draft">Draft</option>
+    <option value="Siap Submit">Siap Submit</option>
     <option value="Submitted">Submitted</option>
     <option value="Review">Review</option>
     <option value="Revisi">Revisi</option>
-    <option value="Diterima">Diterima</option>
-    <option value="Ditolak">Ditolak</option>
+    <option value="Accepted">Accepted</option>
+    <option value="Published">Published</option>
+    <option value="Rejected">Rejected</option>
   </select>
 
   <!-- ✅ Tabel Data -->
   <table id="sheet-data">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Judul Artikel</th>
-        <th>Tanggal Mulai</th>
-        <th>Jurnal</th>
-        <th>Deadline</th>
-        <th>Status</th>
-      </tr>
-    </thead>
+    <thead></thead>
     <tbody></tbody>
   </table>
 
-  <!-- ✅ JavaScript App -->
+  <!-- ✅ JavaScript -->
   <script src="app.js"></script>
 
-  <!-- ✅ Registrasi Service Worker -->
+  <!-- ✅ Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
