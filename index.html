@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tracking Artikel Hukum</title>
+
+  <!-- ✅ Link ke manifest & ikon PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png" />
+  <meta name="theme-color" content="#4caf50" />
+
+  <!-- ✅ CSS Eksternal -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- ✅ CSS Inline -->
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    a {
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📄 Tracking Artikel Hukum</h1>
+
+  <!-- ✅ Dropdown Filter -->
+  <label for="filterStatus"><strong>Filter berdasarkan Status:</strong></label>
+  <select id="filterStatus" onchange="filterData()">
+    <option value="">-- Semua Status --</option>
+    <option value="Draft">Draft</option>
+    <option value="Submitted">Submitted</option>
+    <option value="Review">Review</option>
+    <option value="Revisi">Revisi</option>
+    <option value="Diterima">Diterima</option>
+    <option value="Ditolak">Ditolak</option>
+  </select>
+
+  <!-- ✅ Tabel Data -->
+  <table id="sheet-data">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Judul Artikel</th>
+        <th>Tanggal Mulai</th>
+        <th>Jurnal</th>
+        <th>Deadline</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- ✅ JavaScript App -->
+  <script src="app.js"></script>
+
+  <!-- ✅ Registrasi Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker terdaftar'))
+        .catch(err => console.error('❌ Gagal registrasi SW:', err));
+    }
+  </script>
+
+</body>
+</html>
