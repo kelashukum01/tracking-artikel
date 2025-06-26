@@ -1,7 +1,7 @@
 const apiKey = 'AIzaSyDRjh5bYH1i_RKB-JFMaDRBq4adE4C5oyw';
 const sheetId = '1SbXg_VomcX8ndwjuUKz7BZ-DRPskfk6AzRIysCb694w';
 const sheetName = 'Sheet1';
-const range = `${sheetName}!B2:H`; // mulai dari kolom B sampai H
+const range = `${sheetName}!B3:H`; // mulai dari kolom B sampai H
 
 const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
