@@ -5,38 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tracking Artikel Hukum</title>
 
-  <!-- ✅ PWA Manifest & Ikon -->
+  <!-- Manifest dan Ikon -->
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png" />
   <meta name="theme-color" content="#4caf50" />
 
-  <!-- ✅ Android Web App -->
+  <!-- Web App Android/iOS -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="application-name" content="ArtikelHukum" />
-
-  <!-- ✅ iOS Web App -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="ArtikelHukum" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="apple-touch-icon" href="icon-192x192.png" />
 
-  <!-- ✅ CSS Eksternal -->
+  <!-- CSS Eksternal -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- ✅ CSS Tambahan (Inline) -->
+  <!-- CSS Inline -->
   <style>
-    select {
-      padding: 8px;
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    h1 {
+      font-size: 1.8rem;
       margin-bottom: 1rem;
-      font-size: 1em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    select {
+      padding: 6px;
+      margin-bottom: 1rem;
+    }
+    a {
+      color: blue;
     }
   </style>
 </head>
 <body>
-
   <h1>📄 Tracking Artikel Hukum</h1>
 
-  <!-- ✅ Dropdown Filter Status -->
   <label for="filterStatus"><strong>Filter berdasarkan Status:</strong></label>
   <select id="filterStatus" onchange="filterData()">
     <option value="">-- Semua Status --</option>
@@ -50,23 +70,96 @@
     <option value="Rejected">Rejected</option>
   </select>
 
-  <!-- ✅ Tabel Data -->
   <table id="sheet-data">
     <thead></thead>
     <tbody></tbody>
   </table>
 
-  <!-- ✅ JavaScript -->
-  <script src="app.js"></script>
-
-  <!-- ✅ Service Worker -->
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker terdaftar'))
-        .catch(err => console.error('❌ Gagal registrasi SW:', err));
+    const url = "https://script.google.com/macros/s/AKfycbwvax90P8Ytbp4ULGucN0ZE2fewBYGHHsJpr-M25dJIJMOgB_hLpubsZlU1imSREhSY/exec";
+    let allRows = [];
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        allRows = data.data;
+        tampilkanData("");
+      });
+
+    function tampilkanData(status) {
+      const tbody = document.querySelector("#sheet-data tbody");
+      const thead = document.querySelector("#sheet-data thead");
+      tbody.innerHTML = "";
+
+      const createHeaders = labels => {
+        thead.innerHTML = "<tr>" + labels.map(label => `<th>${label}</th>`).join("") + "</tr>";
+      };
+
+      const filtered = status ? allRows.filter(r => r[8] === status) : allRows;
+
+      filtered.forEach((row, i) => {
+        const tr = document.createElement("tr");
+
+        switch (status) {
+          case "Draft":
+            createHeaders(["No", "Judul Artikel", "Deadline", "Catatan"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[6]}</td><td>${row[7]}</td>`;
+            break;
+
+          case "Siap Submit":
+            createHeaders(["No", "Judul Artikel", "Jurnal", "Index", "Link Jurnal", "Author"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[3]}</td><td>${row[4]}</td><td><a href='${row[5]}' target='_blank'>Lihat</a></td><td>${row[9]}</td>`;
+            break;
+
+          case "Submitted":
+            createHeaders(["No", "Judul Artikel", "Jurnal", "Index", "Tanggal Submit", "Author"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[2]}</td><td>${row[9]}</td>`;
+            break;
+
+          case "Review":
+            createHeaders(["No", "Judul Artikel", "Jurnal", "Index", "Author"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[9]}</td>`;
+            break;
+
+          case "Revisi":
+            createHeaders(["No", "Judul Artikel", "Jurnal", "Catatan", "Author"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[3]}</td><td>${row[7]}</td><td>${row[9]}</td>`;
+            break;
+
+          case "Accepted":
+          case "Published":
+            createHeaders(["No", "Judul Artikel", "Jurnal", "Author"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[3]}</td><td>${row[9]}</td>`;
+            break;
+
+          case "Rejected":
+            createHeaders(["No", "Judul Artikel", "Jurnal", "Catatan", "Author"]);
+            tr.innerHTML = `<td>${i + 1}</td><td>${row[1]}</td><td>${row[3]}</td><td>${row[7]}</td><td>${row[9]}</td>`;
+            break;
+
+          default:
+            createHeaders(["No", "Judul Artikel", "Tanggal Submit", "Jurnal", "Index", "Link Jurnal", "Deadline", "Catatan", "Status", "Author"]);
+            tr.innerHTML = `
+              <td>${i + 1}</td>
+              <td>${row[1]}</td>
+              <td>${row[2]}</td>
+              <td>${row[3]}</td>
+              <td>${row[4]}</td>
+              <td><a href='${row[5]}' target='_blank'>Lihat</a></td>
+              <td>${row[6]}</td>
+              <td>${row[7]}</td>
+              <td>${row[8]}</td>
+              <td>${row[9]}</td>`;
+        }
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterData() {
+      const status = document.getElementById("filterStatus").value;
+      tampilkanData(status);
     }
   </script>
-
 </body>
 </html>
