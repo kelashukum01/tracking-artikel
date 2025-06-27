@@ -1,4 +1,4 @@
-const url = "https://script.google.com/macros/s/AKfycbwvax90P8Ytbp4ULGucN0ZE2fewBYGHHsJpr-M25dJIJMOgB_hLpubsZlU1imSREhSY/exec";
+const url = "https://script.google.com/macros/s/AKfycbx4Mmd9ZpC3NsReKml9hxv3m4DXpVQ5r1MRlBCiePJjiLPJbw3gWyAu4GN4UDHMoKK4/exec";
 
 let allRows = [];
 
